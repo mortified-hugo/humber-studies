@@ -4,7 +4,7 @@ import matplotlib.patches as mpatches
 
 # Tasks: (phase, task name, start_week, end_week_inclusive)
 tasks = [
-    ("Risk Assessment", "P1-T1", 1, 4),
+    ("Risk Assessment", "P1-T1", 0, 3),
     ("Risk Assessment", "P1-T2", 4, 8),
 
     ("Governance Board Set Up", "P2-T1", 4, 5),
@@ -16,7 +16,7 @@ tasks = [
     ("Capability Building", "P3-T3", 15, 16),
     ("Capability Building", "P3-T4", 16, 19),
 
-    ("Controlled Enablement", "P4-T1", 1, 18),  # shown as ongoing until week 18
+    ("Controlled Enablement", "P4-T1", 0, 18),  # shown as ongoing until week 18
     ("Controlled Enablement", "P4-T2", 20, 24),
     ("Controlled Enablement", "P4-T3", 24, 28),
     ("Controlled Enablement", "P4-T4", 29, 30),
@@ -26,10 +26,10 @@ tasks = [
 
 # Map phases to colors
 phase_colors = {
-    "Risk Assessment": "#1f77b4",
-    "Governance Board Set Up": "#ff7f0e",
-    "Capability Building": "#2ca02c",
-    "Controlled Enablement": "#d62728",
+    "Risk Assessment": "#E63946",
+    "Governance Board Set Up": "#F4A261",
+    "Capability Building": "#F2C94C",
+    "Controlled Enablement": "#56CCF2",
 }
 
 # Prepare plotting positions
@@ -61,7 +61,7 @@ for y, start, dur, color, label in zip(y_positions, starts, durations, colors, l
 ax.set_yticks(list(y_positions))
 ax.set_yticklabels([])  # hide default labels because tasks are written on bars
 ax.set_xlabel("Project timeline (Weeks)")
-ax.set_xlim(0.5, 35)  # show weeks 1..34 plus margin
+ax.set_xlim(0, 35)  # show weeks 1..34 plus margin
 ax.set_xticks(range(1, 36))
 ax.xaxis.grid(True, linestyle='--', alpha=0.5)
 
