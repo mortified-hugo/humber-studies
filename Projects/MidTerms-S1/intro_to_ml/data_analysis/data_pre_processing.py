@@ -36,7 +36,7 @@ class DataPreProcessing:
         # View pre-prepared data
         self.data.to_csv("data/pre_prepared_data.csv")
 
-    def convert_date_columns_to_int(self, columns: list, fmt: str = "%m/%d/%Y"):
+    def convert_date_columns_to_int(self, columns: list[str], fmt: str = "%m/%d/%Y") -> None:
         """
         Converts specified columns from string dates to integer format YYYYMMDD.
         :param fmt: date format in the string

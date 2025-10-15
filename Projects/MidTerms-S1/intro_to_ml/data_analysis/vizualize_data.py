@@ -46,5 +46,8 @@ def plot_histogram(dataframe: pd.DataFrame, column: str):
     plt.show()
 
 
+if __name__ == "__main__":
+    plot_histogram(df, 'AMOUNT_ORDER')
+
 
 
