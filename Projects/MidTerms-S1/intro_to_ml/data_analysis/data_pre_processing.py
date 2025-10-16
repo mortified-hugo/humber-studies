@@ -10,6 +10,7 @@ class DataPreProcessing:
     data = pd.read_csv("data/risk-train.txt", sep="\t", dtype=str, index_col="ORDER_ID")
 
     def __init__(self):
+
         # Read everything as a str at first, select other dtypes later.
         self.data.replace("?", np.nan, inplace=True)
 
@@ -28,6 +29,11 @@ class DataPreProcessing:
         # Convert day of the week to number (0-6) and time of the day to number (0-3)
         self.day_of_week_number()
         self.time_of_day_of_order()
+
+        # Drop product columns
+        # We believe that these columns are not relevant to determine if an order is risky or not
+        # Instead, we will focus on the item count and total amount of the order
+        self.data.drop(columns=[f"ANUMMER_{i+1:02d}" for i in range(10)], inplace=True)
 
         # View missing values per column
         missing_df = self.get_missing_values()
@@ -51,7 +57,7 @@ class DataPreProcessing:
         for column in self.data.columns:
             print(self.data[column].value_counts())
 
-    def get_missing_values(self):
+    def get_missing_values(self) -> pd.DataFrame:
         """Returns a DataFrame with the count of missing values per column."""
         missing_df = pd.DataFrame(columns=["Column", "Missing Values"])
         columns = self.data.columns
