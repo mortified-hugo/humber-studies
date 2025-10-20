@@ -38,6 +38,25 @@ class DataPreProcessing:
         # Classification matrix for payment methods
         self.classification_matrix()
 
+        # Deal with missing data
+        # Birthdate: fill with median
+        self.data["B_BIRTHDATE"].fillna(self.data["B_BIRTHDATE"].median(), inplace=True)
+
+        # Z_LAST_NAME: fill with 1
+        self.data["Z_LAST_NAME"].fillna(1, inplace=True)
+
+        # DATE_LORDER: remove column
+        self.data.drop(columns=["DATE_LORDER"], inplace=True)  # No way to calculate the delta from this date to present
+
+        # MAHN_AKT and MAHN_HOECHST: fill with 0 (Also possible to replace with -1)
+        self.data["MAHN_AKT"].fillna(0, inplace=True)
+        self.data["MAHN_HOECHST"].fillna(0, inplace=True)
+
+        # Eliminate the outliers (Box-plot method)
+        # columns_with_continuos_data = ["B_BIRTHDATE", "Z_CARD_VALID", "VALUE_ORDER", "AMOUNT_ORDER", ]
+
+        # Normalize the data (Z-score)
+
         # View missing values per column
         missing_df = self.get_missing_values()
         missing_df.to_csv("data/missing_values.csv")
@@ -89,7 +108,7 @@ class DataPreProcessing:
 
         for key, value in replace.items():
             self.data['Z_METHODE'].replace(key, value, inplace=True)
-        print(self.data['Z_METHODE'].value_counts())
+        # print(self.data['Z_METHODE'].value_counts())
 
         self.data = pd.get_dummies(self.data, columns=['Z_METHODE'], prefix=['METHOD'], dtype=int)
 
