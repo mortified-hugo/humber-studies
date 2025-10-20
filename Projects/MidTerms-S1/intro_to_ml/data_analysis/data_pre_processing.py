@@ -73,7 +73,7 @@ class DataPreProcessing:
             self.data[col] = self.data[col].astype(float)
             mean = self.data[col].mean()
             std = self.data[col].std()
-            self.data[col] = (self.data[col] - mean) / std
+            self.data[col] = (self.data[col] - mean) / std  # Z-score normalization
 
         # View missing values per column
         missing_df = self.get_missing_values()
