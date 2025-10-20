@@ -1,49 +1,49 @@
 Description of the attributes
 
 Name of Attribute     Description
-ORDER_ID              ID number of the online order
-CLASS                 Class attribute of the task (yes/no) -- replace all y/n with 1/0
+ORDER_ID              ID number of the online order --not needed
+CLASS                 Class attribute of the task (yes/no) -- replace all y/n with 1/0 -- ordered or not ordered is what we are looking for could be relevant after defining it as 1 or 0
                       (only contained in the training data)
-B_EMAIL               was an email address submitted together with the order (yes/no)
-B_TELEFON             was an phone number submitted together with the order (yes/no)
-B_BIRTHDATE           Birth date, if submitted together with the order
+B_EMAIL               was an email address submitted together with the order (yes/no) -- yes can link to if the customer bought the final product
+B_TELEFON             was an phone number submitted together with the order (yes/no) -- yes can link to if the customer bought the final product
+B_BIRTHDATE           Birth date, if submitted together with the order -- not needed
 FLAG_LRIDENTISCH      if address of delievery and invoice are identical then "yes" else "no" -- possibly not relevant
-FLAG_NEWSLETTER       was the E-Newsletter subscribed to together with the order (yes/no) -- possibly not relevant
-Z_METHODE             Selected method of payment
-Z_CARD_ART            Selected type of card if payment by card is chosen
-Z_CARD_VALID          Expiration date of the card in the form month.year -- datetime format
-                      (e.g. 05.2006 meaning the card is valid till May 2006)
+FLAG_NEWSLETTER       was the E-Newsletter subscribed to together with the order (yes/no) -- relevant
+Z_METHODE             Selected method of payment - not relevant
+Z_CARD_ART            Selected type of card if payment by card is chosen - not relevant
+Z_CARD_VALID          Expiration date of the card in the form month.year -- possibly relevant
+                      (e.g. 05.2006 meaning the card is valid till May 2006) - not relevant
 Z_LAST_NAME           is the name of the account or card holder identical with the name of
-                      the delivery address (yes/no)
-WEEKDAY_ORDER         Weekday of the order -- scalar 0 to 7 or 0 to 0.7?
-TIME_ORDER            Time of the order -- convert to minutes after midnight then normalize -- ok! (scalar 0 to 3)
-AMOUNT_ORDER          Number of ordered items
-ANUMBER_01            Data field for the number of an ordered item
-ANUMBER_02            Data field for the number of an ordered item
-ANUMBER_03            Data field for the number of an ordered item
-ANUMBER_04            Data field for the number of an ordered item
-ANUMBER_05            Data field for the number of an ordered item
-ANUMBER_06            Data field for the number of an ordered item
-ANUMBER_07            Data field for the number of an ordered item
-ANUMBER_08            Data field for the number of an ordered item
-ANUMBER_09            Data field for the number of an ordered item
-ANUMBER_10            Data field for the number of an ordered item -- consolidate all columns in a single feature column? how? item matrix?
-CHK_LADR              Orders with the same delivery address within 3 days (yes/no)
-CHK_RADR              Orders with the same invoice address within 3 days (yes/no)
-CHK_KTO               Orders with the same account number within 3 days (yes/no)
-CHK_CARD              Orders with the same card number within 3 days (yes/no)
-CHK_COOKIE            Orders with the same browser cookie within 3 days (yes/no)
-CHK_IP                Orders with the same browser IP within 3 days (yes/no)
-FAIL_LPLZ             Zip code of the delivery address unknown (yes/no)
-FAIL_LORT             City of the delivery address unknown (yes/no)
-FAIL_LPLZORTMATCH     Zip code and city of the delivery address do not fit together (yes/no)
-FAIL_RPLZ             Zip code of the invoice address unknown (yes/no)
-FAIL_RORT             City of the invoice address unknown (yes/no)
-FAIL_RPLZORTMATCH     Zip code and city of the invoice address do not fit together (yes/no)
+                      the delivery address (yes/no) - possibly relevant
+WEEKDAY_ORDER         Weekday of the order -- scalar 0 to 7 or 0 to 0.7? - relevant
+TIME_ORDER            Time of the order -- convert to minutes after midnight then normalize -- ok! (scalar 0 to 3) -- relevant
+AMOUNT_ORDER          Number of ordered items - relevant
+ANUMBER_01            Data field for the number of an ordered item --possibly needed
+ANUMBER_02            Data field for the number of an ordered item --not needed
+ANUMBER_03            Data field for the number of an ordered item -- not needed
+ANUMBER_04            Data field for the number of an ordered item -- not needed
+ANUMBER_05            Data field for the number of an ordered item -- not needed
+ANUMBER_06            Data field for the number of an ordered item -- not needed
+ANUMBER_07            Data field for the number of an ordered item -- not needed
+ANUMBER_08            Data field for the number of an ordered item -- not needed
+ANUMBER_09            Data field for the number of an ordered item -- not needed
+ANUMBER_10            Data field for the number of an ordered item -- not needed #filtered data is tapered off after anumer 3
+CHK_LADR              Orders with the same delivery address within 3 days (yes/no)-- relevant as a fraud indicator
+CHK_RADR              Orders with the same invoice address within 3 days (yes/no)--relevant as a fraud indicator
+CHK_KTO               Orders with the same account number within 3 days (yes/no)-- relevant as a fraud indicator
+CHK_CARD              Orders with the same card number within 3 days (yes/no)-- relevant as a fraud indicator
+CHK_COOKIE            Orders with the same browser cookie within 3 days (yes/no)-- relevant as a fraud indicator
+CHK_IP                Orders with the same browser IP within 3 days (yes/no)--relevant as a fraud indicator
+FAIL_LPLZ             Zip code of the delivery address unknown (yes/no)-- relevant as a fraud indicator
+FAIL_LORT             City of the delivery address unknown (yes/no) -- relevant as a fraud indicator
+FAIL_LPLZORTMATCH     Zip code and city of the delivery address do not fit together (yes/no) -- relevant as a fraud indicator
+FAIL_RPLZ             Zip code of the invoice address unknown (yes/no) -- relevant as a fraud indicator
+FAIL_RORT             City of the invoice address unknown (yes/no) - relevant as a fraud indicator
+FAIL_RPLZORTMATCH     Zip code and city of the invoice address do not fit together (yes/no) -- relevant as a fraud indicator
 SESSION_TIME          Duration of the online session for the order in minutes -- relevant to detect bot orders?
-NEUKUNDE              is the ordering person a new custormer (yes/no)
-AMOUNT_ORDER_PRE      Total number of items of previous orders, if available
-VALUE_ORDER_PRE       Total value of previous orders, if available
+NEUKUNDE              is the ordering person a new custormer (yes/no) - relevant to see amount of new customers interested
+AMOUNT_ORDER_PRE      Total number of items of previous orders, if available - relevant based on repeat purchases
+VALUE_ORDER_PRE       Total value of previous orders, if available - relevant based on above
 DATE_LORDER           Date of the last order, if available -- replace with a y/n column where there was a previous order or not, related to NEUKUNDE
-MAHN_AKT              Current stage of reminder of the customer, if available --? what? costumer got reminded to pay?
-MAHN_HOECHST          Highest stage of reminder of the customer occurred up to now, if available
+MAHN_AKT              Current stage of reminder of the customer, if available --? what? costumer got reminded to pay? - relevant
+MAHN_HOECHST          Highest stage of reminder of the customer occurred up to now, if available - relevant
