@@ -35,6 +35,9 @@ class DataPreProcessing:
         # Instead, we will focus on the item count and total amount of the order
         self.data.drop(columns=[f"ANUMMER_{i+1:02d}" for i in range(10)], inplace=True)
 
+        # Classification matrix for payment methods
+        self.classification_matrix()
+
         # View missing values per column
         missing_df = self.get_missing_values()
         missing_df.to_csv("data/missing_values.csv")
@@ -71,6 +74,25 @@ class DataPreProcessing:
 
         return missing_df
 
+    def classification_matrix(self):
+        """Transforms the Z_METHODE and Z_CARD_ART into a classification matrix"""
+        # Merge the columns Z_METHODE and Z_CARD_ART
+        self.data['Z_METHODE'] = self.data['Z_METHODE'] + "_" + self.data['Z_CARD_ART'].astype(str)
+        self.data.drop(columns=['Z_CARD_ART'], inplace=True)
+
+        # Rename values
+        replace = {
+            "check_nan": "check",
+            "debit_note_nan": "debit_note",
+            "debit_card_debit_card": "debit_card",
+        }
+
+        for key, value in replace.items():
+            self.data['Z_METHODE'].replace(key, value, inplace=True)
+        print(self.data['Z_METHODE'].value_counts())
+
+        self.data = pd.get_dummies(self.data, columns=['Z_METHODE'], prefix=['METHOD'], dtype=int)
+
     def time_of_day_of_order(self):
         """Creates a new column 'TIME_OF_DAY' based on the hour of 'DATE_LORDER'."""
         self.data['HOUR'] = pd.to_datetime(self.data['TIME_ORDER'], format="%H:%M").dt.hour
@@ -94,4 +116,4 @@ class DataPreProcessing:
 
 if __name__ == "__main__":
     get_data = DataPreProcessing()
-    get_data.info_per_column()
+
