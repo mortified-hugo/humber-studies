@@ -46,8 +46,18 @@ def plot_histogram(dataframe: pd.DataFrame, column: str):
     plt.show()
 
 
+def box_plot(dataframe: pd.DataFrame, column: str):
+    """Generates a box plot for the specified column."""
+    plt.figure(figsize=(8, 6))
+    plt.boxplot(dataframe[column], vert=True)
+    plt.title(f'Box Plot of {column}')
+    plt.ylabel(column)
+    plt.grid(True)
+    plt.show()
+
+
 if __name__ == "__main__":
-    plot_histogram(df, 'AMOUNT_ORDER')
+    box_plot(df, "B_BIRTHDATE")
 
 
 

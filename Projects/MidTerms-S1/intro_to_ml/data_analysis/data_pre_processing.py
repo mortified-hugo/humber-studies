@@ -53,9 +53,27 @@ class DataPreProcessing:
         self.data["MAHN_HOECHST"].fillna(0, inplace=True)
 
         # Eliminate the outliers (Box-plot method)
-        # columns_with_continuos_data = ["B_BIRTHDATE", "Z_CARD_VALID", "VALUE_ORDER", "AMOUNT_ORDER", ]
+        columns_with_continuos_data = ["B_BIRTHDATE", "Z_CARD_VALID", "VALUE_ORDER", "AMOUNT_ORDER",
+                                       "SESSION_TIME", "VALUE_ORDER_PRE", "AMOUNT_ORDER_PRE"]
+
+        for col in columns_with_continuos_data:
+            print(col)
+            self.data[col] = self.data[col].astype(float)
+            Q1 = self.data[col].quantile(0.20)  # Changed from 0.25 to 0.20 1/5th of deviation allowed
+            Q3 = self.data[col].quantile(0.80)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            self.data = self.data[(self.data[col] >= lower_bound) & (self.data[col] <= upper_bound)]
 
         # Normalize the data (Z-score)
+        columns_with_continuos_data += ["WEEKDAY_ORDER", "TIME_ORDER", "MAHN_AKT", "MAHN_HOECHST"]
+
+        for col in columns_with_continuos_data:
+            self.data[col] = self.data[col].astype(float)
+            mean = self.data[col].mean()
+            std = self.data[col].std()
+            self.data[col] = (self.data[col] - mean) / std
 
         # View missing values per column
         missing_df = self.get_missing_values()
