@@ -10,7 +10,6 @@ class DataPreProcessing:
     data = pd.read_csv("data/risk-train.txt", sep="\t", dtype=str, index_col="ORDER_ID")
 
     def __init__(self):
-
         # Read everything as a str at first, select other dtypes later.
         self.data.replace("?", np.nan, inplace=True)
 
@@ -52,35 +51,33 @@ class DataPreProcessing:
         self.data["MAHN_AKT"].fillna(0, inplace=True)
         self.data["MAHN_HOECHST"].fillna(0, inplace=True)
 
-        # Eliminate the outliers (Box-plot method)
-        columns_with_continuos_data = ["B_BIRTHDATE", "Z_CARD_VALID", "VALUE_ORDER", "AMOUNT_ORDER",
-                                       "SESSION_TIME", "VALUE_ORDER_PRE", "AMOUNT_ORDER_PRE"]
+        # Convert columns to float
+        float_columns = ["B_BIRTHDATE", "Z_CARD_VALID", "VALUE_ORDER", "SESSION_TIME", "VALUE_ORDER_PRE",
+                         "AMOUNT_ORDER_PRE", "AMOUNT_ORDER", "MAHN_AKT", "MAHN_HOECHST", "WEEKDAY_ORDER", "TIME_ORDER"]
 
-        for col in columns_with_continuos_data:
-            print(col)
-            self.data[col] = self.data[col].astype(float)
-            Q1 = self.data[col].quantile(0.20)  # Changed from 0.25 to 0.20 1/5th of deviation allowed
-            Q3 = self.data[col].quantile(0.80)
-            IQR = Q3 - Q1
-            lower_bound = Q1 - 1.5 * IQR
-            upper_bound = Q3 + 1.5 * IQR
-            self.data = self.data[(self.data[col] >= lower_bound) & (self.data[col] <= upper_bound)]
+        self.data[float_columns] = self.data[float_columns].astype(float)
+
+        # Eliminate the outliers (Box-plot method)
+        columns_with_ordinal_data = ["B_BIRTHDATE", "Z_CARD_VALID", "VALUE_ORDER", "SESSION_TIME", "VALUE_ORDER_PRE"]
+        columns_with_ordinal_data += ["AMOUNT_ORDER_PRE", "AMOUNT_ORDER"]
+
+        self.eliminate_outliers(columns_with_ordinal_data)
 
         # Normalize the data (Z-score)
-        columns_with_continuos_data += ["WEEKDAY_ORDER", "TIME_ORDER", "MAHN_AKT", "MAHN_HOECHST"]
+        columns_with_ordinal_data += ["MAHN_AKT", "MAHN_HOECHST"]
+        columns_with_ordinal_data += ["WEEKDAY_ORDER", "TIME_ORDER"]
 
-        for col in columns_with_continuos_data:
-            self.data[col] = self.data[col].astype(float)
-            mean = self.data[col].mean()
-            std = self.data[col].std()
-            self.data[col] = (self.data[col] - mean) / std  # Z-score normalization
+        self.normalize_data(columns_with_ordinal_data)
+
+        # Eliminate (or not) the Birthdate column
+        # self.data.drop(columns=["B_BIRTHDATE"], inplace=True)
 
         # View missing values per column
         missing_df = self.get_missing_values()
         missing_df.to_csv("data/missing_values.csv")
 
         # View pre-prepared data
-        self.data.to_csv("data/pre_prepared_data.csv")
+        self.data.to_csv("data/pre_prepared_data_v1.csv")
 
     def convert_date_columns_to_int(self, columns: list[str], fmt: str = "%m/%d/%Y") -> None:
         """
@@ -149,6 +146,26 @@ class DataPreProcessing:
         }
 
         self.data['WEEKDAY_ORDER'] = self.data['WEEKDAY_ORDER'].apply(lambda x: day_of_the_week[x])
+
+    def normalize_data(self, columns: list[str]) -> None:
+        """
+        Normalizes specified columns using Z-score normalization.
+        :param columns: list of column names to normalize
+        """
+        for col in columns:
+            mean = self.data[col].mean()
+            std = self.data[col].std()
+            self.data[col] = round((self.data[col] - mean) / std, 3)  # Z-score normalization
+
+    def eliminate_outliers(self, columns: list[str]):
+        """Using the box-plot method to eliminate outliers from specified columns."""
+        for col in columns:
+            q1 = self.data[col].quantile(0.20)  # Changed from 0.25 to 0.20 1/5th of deviation allowed
+            q3 = self.data[col].quantile(0.80)
+            iqr = q3 - q1
+            lower_bound = q1 - 1.5 * iqr
+            upper_bound = q3 + 1.5 * iqr
+            self.data = self.data[(self.data[col] >= lower_bound) & (self.data[col] <= upper_bound)]
 
 
 if __name__ == "__main__":
