@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-df = pd.read_csv("data/pre_prepared_data.csv", index_col="ORDER_ID")
+df = pd.read_csv("data/pre_prepared_data_v7.csv", index_col="ORDER_ID")
 
 
 def correlation_heatmap(dataframe: pd.DataFrame):
@@ -56,8 +56,33 @@ def box_plot(dataframe: pd.DataFrame, column: str):
     plt.show()
 
 
+def analyse_column_values(df: pd.DataFrame, columns: list[str] = None):
+    """Analyzes and prints the mean values of each column for different classes."""
+    if columns is None:
+        columns = df.columns.tolist()
+        columns.remove("CLASS")
+
+    for col in columns:
+        mean_0 = df[df["CLASS"] == 0][col].mean()
+        mean_1 = df[df["CLASS"] == 1][col].mean()
+
+        print(f'Analyzing column: {col}')
+        print(f'Mean value for CLASS 0: {mean_0}')
+        print(f'Mean value for CLASS 1: {mean_1}')
+        print(f'Difference in means: {mean_0 - mean_1}\n')
+
+
 if __name__ == "__main__":
-    box_plot(df, "B_BIRTHDATE")
+    for column in df.columns:
+        if column != "CLASS":
+            print(column)
+            correlation_with_target(df, column)
+            print("\n")
 
+    correlation_heatmap(df)
 
-
+    # print(df[df["CLASS"] == 1]["GRANULAR_WEEKDAY"].value_counts())
+    # print(f"0: {df[df["CLASS"] == 0]["GRANULAR_WEEKDAY"].value_counts()}\n")
+    # correlation_heatmap(df)
+    # print(f"1: {df[df["CLASS"] == 1]["TIME_ORDER"].value_counts()}\n")
+    # print(f"0: {df[df["CLASS"] == 0]["TIME_ORDER"].value_counts()}\n")
