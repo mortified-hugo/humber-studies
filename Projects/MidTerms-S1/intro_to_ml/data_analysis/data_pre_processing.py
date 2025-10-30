@@ -42,7 +42,7 @@ class DataPreProcessing:
         risky_items = risky_item_df[criteria]["ANUMMER_01"].astype(str).tolist()
         self.data["RISKY_ITEMS"] = np.where(self.data["ALL_ITEMS"].str.contains('|'.join(risky_items)), 1, 0)
         self.data.drop(columns=["ALL_ITEMS"], inplace=True)
-        self.data.drop(columns=item_columns, inplace=True)
+        self.data.drop(columns=item_columns, inplace=True)  # 0.12
 
         # Classification matrix for payment methods
         self.classification_matrix()
@@ -176,8 +176,9 @@ class DataPreProcessing:
         """Creates a new column 'TIME_OF_DAY' based on the hour of 'DATE_LORDER'."""
         print(self.data["TIME_ORDER"])
         self.data['TIME_ORDER'] = pd.to_datetime(self.data['TIME_ORDER'], format="%H:%M").dt.hour
+        self.data['TIME_ORDER'].fillna(0)
 
-        self.data['TIME_ORDER'] = self.data['HOUR'].apply(categorize_time_of_day) / 4
+        # self.data['TIME_ORDER'] = self.data['HOUR'].apply(categorize_time_of_day) / 4
         # self.data.drop(columns=['HOUR'], inplace=True)
         # self.cyclic_encode_column('TIME_ORDER', 4)
 

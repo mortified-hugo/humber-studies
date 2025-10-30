@@ -54,17 +54,17 @@ if __name__ == '__main__':
     }
     raw_data['WEEKDAY_ORDER'] = raw_data['WEEKDAY_ORDER'].apply(lambda x: day_of_the_week[x])
 
-    raw_data['WEEKDAY_AND_HOUR'] = raw_data['WEEKDAY_ORDER'] + (raw_data['HOUR'] / 25)
+    # raw_data['WEEKDAY_AND_HOUR'] = raw_data['WEEKDAY_ORDER'] + (raw_data['HOUR'] / 25)
 
-    correlation_with_target(raw_data, 'WEEKDAY_AND_HOUR', 'CLASS')
+    correlation_with_target(raw_data, 'HOUR', 'CLASS')
 
     no_fraud = raw_data[raw_data["CLASS"] == 0]
     fraud = raw_data[raw_data["CLASS"] == 1]
 
-    fraud_data = fraud['WEEKDAY_AND_HOUR'].value_counts().sort_index()
+    fraud_data = fraud['HOUR'].value_counts().sort_index()
     fraud_data = fraud_data / fraud_data.sum()
 
-    no_fraud_data = no_fraud['WEEKDAY_AND_HOUR'].value_counts().sort_index()
+    no_fraud_data = no_fraud['HOUR'].value_counts().sort_index()
     no_fraud_data = no_fraud_data / no_fraud_data.sum()
 
     fraud_data.plot(kind='bar', color='r')

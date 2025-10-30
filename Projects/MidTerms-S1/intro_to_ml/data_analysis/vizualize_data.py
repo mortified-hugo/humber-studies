@@ -22,6 +22,7 @@ def correlation_with_target(dataframe: pd.DataFrame, source_column: str, target_
     """Calculates and displays the correlation of each feature with the target column."""
     correlation_with_target = dataframe[source_column].dropna().corr(df[target_column])
     print(f"Correlation with {target_column}:\n", correlation_with_target)
+    return correlation_with_target
 
 
 def plot_feature_vs_target(dataframe: pd.DataFrame, feature_column: str, target_column: str):
@@ -73,12 +74,20 @@ def analyse_column_values(df: pd.DataFrame, columns: list[str] = None):
 
 
 if __name__ == "__main__":
+    correlation_df = pd.DataFrame({"COLUMN": [], "CORRELATION": []})
+    columns = []
+    correlations = []
+
     for column in df.columns:
         if column != "CLASS":
             print(column)
-            correlation_with_target(df, column)
+            columns.append(column)
+            correlations.append(round(correlation_with_target(df, column), 5))
             print("\n")
+    correlation_df["COLUMN"] = columns
+    correlation_df["CORRELATION"] = correlations
 
+    correlation_df.to_csv("data/study/correlation_study_v7.csv")
     correlation_heatmap(df)
 
     # print(df[df["CLASS"] == 1]["GRANULAR_WEEKDAY"].value_counts())
