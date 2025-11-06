@@ -1,42 +1,42 @@
 class Account:
-    _id: int = 0
-    _balance:float = 0
-    _annual_interest_rate: float = 0
+    __id: int = 0
+    __balance:float = 0
+    __annual_interest_rate: float = 0
 
     def __init__(self, id: int=0, balance: float=0, annual_interest_rate: float=0):
-        self._id = id
-        self._balance = balance
-        self._annual_interest_rate = annual_interest_rate
+        self.__id = id
+        self.__balance = balance
+        self.__annual_interest_rate = annual_interest_rate
 
     def get_id(self):
-        return self._id
+        return self.__id
 
     def get_balance(self):
-        return self._balance
+        return self.__balance
 
     def get_annual_interest_rate(self):
-        return self._annual_interest_rate
+        return self.__annual_interest_rate
 
     def set_balance(self, balance: float):
-        self._balance = balance
+        self.__balance = balance
 
     def set_id(self, new_id: int):
-        self._id = new_id
+        self.__id = new_id
 
     def set_annual_interest_rate(self, new_annual_interest_rate: float):
-        self._annual_interest_rate = new_annual_interest_rate
+        self.__annual_interest_rate = new_annual_interest_rate
 
     def get_monthly_interest_rate(self):
-        return self._annual_interest_rate / 12
+        return self.__annual_interest_rate / 12
 
     def get_monthly_interest(self):
-        return self._balance * self.get_monthly_interest_rate()
+        return self.__balance * self.get_monthly_interest_rate()
 
     def withdraw(self, amount: float):
-        self._balance -= amount
+        self.__balance -= amount
 
     def deposit(self, amount: float):
-        self._balance += amount
+        self.__balance += amount
 
 
 my_account = Account(id=1122, balance=20000, annual_interest_rate=0.045)
